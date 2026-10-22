@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Elite Event Planner</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f8f3ff;color:#302044}
+header{background:linear-gradient(110deg,#4a148c,#7b1fa2);color:white;padding:14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;position:sticky;top:0;z-index:10}
+.logo{font-size:23px;font-weight:bold;margin-right:auto}
+nav{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+button{cursor:pointer;border:0;border-radius:8px;padding:10px 13px;font-weight:bold}
+nav button{background:#ffffff20;color:white}
+nav button:hover{background:white;color:#4a148c}
+.menu{position:relative}
+.dots{font-size:24px;background:#ffffff25;color:white;padding:4px 13px}
+.dropdown{position:absolute;right:0;top:42px;background:white;box-shadow:0 5px 20px #0003;border-radius:10px;min-width:170px;padding:6px}
+.dropdown button{display:block;width:100%;text-align:left;background:white;color:#4a148c;margin:3px 0}
+.dropdown button:hover{background:#f3e5f5}
+main{max-width:1100px;margin:auto;padding:18px 12px 50px}
+.page{display:none}
+.page.active{display:block}
+.hero{background:linear-gradient(120deg,#4a148c,#ad46bd);color:white;text-align:center;padding:50px 15px;border-radius:18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.card,.panel{background:white;padding:16px;border-radius:13px;border:1px solid #eadcf7;box-shadow:0 3px 10px #0000000a;margin-bottom:12px}
+.photo{width:100%;height:160px;object-fit:cover;border-radius:9px;background:#eee}
+.field{margin:12px 0}
+.field label{display:block;font-weight:bold;font-size:13px;margin-bottom:5px}
+input,select,textarea{width:100%;padding:11px;border:1px solid #d8c6e9;border-radius:8px;font:inherit}
+textarea{min-height:75px}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.purple{background:#4a148c;color:white}
+.gold{background:#ffdf65;color:#4a148c}
+.red{background:#c62828;color:white}
+.green{background:#267b43;color:white}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.price{font-weight:bold;color:#6a1b9a}
+.notice{background:#f3e5f5;border-left:4px solid #8e24aa;border-radius:8px;padding:12px;margin:12px 0}
+.hidden{display:none!important}
+.decorations{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}
+.deco{border:2px solid #eadcf7;border-radius:10px;padding:8px;cursor:pointer;background:white}
+.deco.selected{border-color:#6a1b9a;background:#f3e5f5}
+.deco .photo{height:100px}
+.adminrow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:#f8f3ff;border:1px solid #eadcf7;border-radius:10px;padding:12px;margin:8px 0}
+.progress{height:9px;background:#eee;border-radius:10px;overflow:hidden}
+.bar{height:100%;background:#6a1b9a}
+footer{text-align:center;color:#82728f;padding:20px;font-size:12px}
+.advance-panel{background:linear-gradient(120deg,#fff7e6,#fce4ec);border:2px solid #ffca28;border-radius:14px;padding:24px 18px;margin:16px 0}
+.advance-panel h3{font-size:23px;margin:18px 0 28px;color:#302044}
+.advance-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.advance-field label{display:block;font-weight:bold;font-size:13px;margin-bottom:6px}
+.advance-field input,.advance-field select{width:100%;min-width:0;padding:14px 12px;border:1px solid #dfc3fa;border-radius:11px;background:#fff;color:#302044;font-size:18px}
+.advance-progress{height:13px;background:#eee;border-radius:20px;overflow:hidden;margin-top:20px}
+.advance-progress-bar{width:30%;height:100%;background:linear-gradient(90deg,#6a1b9a,#ff6d00);transition:width .3s ease}
+.advance-progress-text{margin:16px 0;color:#756580;font-size:14px}
+.price-breakdown{background:#f3e5f5;border-left:6px solid #8e24aa;border-radius:12px;padding:18px;margin:16px 0}
+.price-breakdown h4{margin:0 0 14px;font-size:16px}
+.price-breakdown-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0}
+.price-breakdown-row strong{text-align:right}
+.price-breakdown-total{border-top:1px solid #d8c6e9;margin-top:6px;padding-top:16px;font-weight:bold}
+.payment-heading{display:flex;align-items:center;gap:10px}
+.payment-logo{width:46px;height:46px;border-radius:12px;background:#f3e5f5;display:grid;place-items:center;font-size:25px}
+.payment-method-card{border:1px solid #e3d5ef;border-radius:12px;padding:14px;background:#fff;margin:12px 0}
+.payment-method-card h3{margin-top:0}
+.payment-status{display:flex;align-items:center;gap:8px;padding:10px;border-radius:8px;background:#f3e5f5;margin:10px 0}
+.payment-status-dot{width:10px;height:10px;background:#8e24aa;border-radius:50%}
+.payment-qr{width:150px;height:150px;margin:12px auto;border:8px solid white;outline:1px solid #ddd;border-radius:8px;background:repeating-conic-gradient(#302044 0% 25%,white 0% 50%) 50%/12px 12px}
+.payment-bank{display:flex;gap:10px;align-items:center;padding:10px;border:1px solid #e3d5ef;border-radius:8px;margin:8px 0}
+.payment-bank-icon{font-size:24px}
+.payment-total{background:#f3e5f5;border-radius:10px;padding:14px;margin:12px 0}
+.payment-total strong{font-size:23px;color:#4a148c}
+.payment-small{font-size:12px;color:#756580;line-height:1.5}
+.payment-security{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;color:#756580;font-size:12px;margin-top:14px}
+.payment-security span{padding:6px 9px;background:#f8f3ff;border-radius:7px}
+@media(max-width:900px){.advance-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){
+ header{position:static}
+ .logo{width:100%;text-align:center}
+ nav{width:100%;justify-content:center}
+ nav button{padding:8px;font-size:12px}
+ .hero{padding:30px 12px}
+}
+@media(max-width:480px){
+ .advance-grid{grid-template-columns:1fr}
+ .advance-panel{padding:16px 12px}
+ .advance-panel h3{font-size:20px}
+}
+@media print{
+ header,footer,.no-print{display:none!important}
+ .page{display:none!important}
+ #receiptPage{display:block!important}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">💜 Elite Events</div>
+  <nav>
+    <button type="button" onclick="showPage('home')">Home</button>
+    <button type="button" onclick="showPage('events')">Events</button>
+    <button type="button" onclick="showPage('locations')">Venues</button>
+    <button type="button" onclick="showPage('bookings')">My Bookings</button>
+    <button type="button" id="loginButton" onclick="showPage('login')">Login</button>
+    <button type="button" id="registerButton" onclick="showPage('register')">Register</button>
+    <button type="button" id="logoutButton" class="hidden" onclick="logout()">Logout</button>
+    <div class="menu">
+      <button type="button" class="dots" onclick="toggleMenu()" aria-label="Admin menu">⋮</button>
+      <div id="dropdown" class="dropdown hidden">
+        <button type="button" onclick="toggleMenu();showPage('adminLogin')">🔐 Admin Login</button>
+        <button type="button" onclick="toggleMenu();showPage('about')">ℹ️ About</button>
+      </div>
+    </div>
+  </nav>
+</header>
+<main>
+<section id="home" class="page active">
+  <div class="hero">
+    <h1>Make Every Moment Special ✨</h1>
+    <p>Plan birthdays, weddings, engagements, baby showers and corporate events.</p>
+    <button type="button" class="gold" onclick="showPage('events')">Explore Events</button>
+    <button type="button" onclick="showPage('locations')">Explore Venues</button>
+  </div>
+  <h2>Popular Events</h2>
+  <div id="homeEvents" class="grid"></div>
+</section>
+<section id="events" class="page">
+  <h2>Choose Your Event</h2>
+  <div id="eventList" class="grid"></div>
+</section>
+<section id="locations" class="page">
+  <h2>Our Bengaluru Venues</h2>
+  <div id="locationList" class="grid"></div>
+</section>
+<section id="about" class="page">
+  <div class="panel">
+    <h2>About Elite Events</h2>
+    <p>Choose your event, venue, decoration and date. Review the estimated cost and complete your booking.</p>
+    <p>This is a student project. Login, bookings and payment simulations are stored in this browser. No real payment is taken.</p>
+  </div>
+</section>
+<section id="register" class="page">
+  <div class="panel" style="max-width:500px;margin:auto">
+    <h2>Create Account</h2>
+    <form id="registerForm">
+      <div class="field"><label>Full Name</label><input id="regName" required></div>
+      <div class="field"><label>Email</label><input id="regEmail" type="email" required></div>
+      <div class="field"><label>Phone</label><input id="regPhone" type="tel" required></div>
+      <div class="field"><label>Password (at least 6 characters)</label><input id="regPassword" type="password" minlength="6" required></div>
+      <button class="purple" type="submit">Register</button>
+    </form>
+    <p id="registerMessage"></p>
+  </div>
+</section>
+<section id="login" class="page">
+  <div class="panel" style="max-width:500px;margin:auto">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <div class="field"><label>Email</label><input id="loginEmail" type="email" required></div>
+      <div class="field"><label>Password</label><input id="loginPassword" type="password" required></div>
+      <button class="purple" type="submit">Login</button>
+    </form>
+    <p id="loginMessage"></p>
+  </div>
+</section>
+<section id="booking" class="page">
+  <div class="panel">
+    <h2>Book Your Event</h2>
+    <form id="bookingForm">
+      <div class="row">
+        <div class="field"><label>Event</label><select id="eventSelect" required></select></div>
+        <div class="field"><label>Event Date</label><input id="eventDate" type="date" required></div>
+        <div class="field"><label>Time</label><input id="eventTime" type="time" value="18:00" required></div>
+        <div class="field"><label>Number of Guests</label><input id="guests" type="number" min="1" max="5000" value="50" required></div>
+        <div class="field"><label>Venue</label><select id="venueSelect" required></select></div>
+      </div>
+      <div id="customVenue" class="notice hidden">
+        <h3>Custom Venue</h3>
+        <div class="row">
+          <div class="field"><label>Venue Name</label><input id="venueName" placeholder="Venue name"></div>
+          <div class="field"><label>Area</label><input id="venueArea" placeholder="Area, Bengaluru"></div>
+          <div class="field"><label>Full Address</label><input id="venueAddress" placeholder="Full address"></div>
+          <div class="field"><label>Venue Charge (₹)</label><input id="venueCharge" type="number" min="0" value="0"></div>
+        </div>
+      </div>
+      <h3>Select Decoration</h3>
+      <div id="decorationList" class="decorations"></div>
+      <div class="notice">
+        <label><input id="customDecCheck" type="checkbox" style="width:auto"> Request a custom decoration instead</label>
+        <div id="customDecoration" class="hidden">
+          <div class="row">
+            <div class="field"><label>Decoration Theme</label><input id="customDecName" placeholder="e.g. White and gold"></div>
+            <div class="field"><label>Colours</label><input id="customDecColors" placeholder="Pink, white, gold"></div>
+            <div class="field">
+              <label>Style</label>
+              <select id="customDecStyle">
+                <option value="">Choose style</option>
+                <option>Floral</option><option>Balloon</option><option>Traditional</option>
+                <option>Royal</option><option>Minimal</option><option>LED / Lighting</option>
+                <option>Theme-based</option><option>Other</option>
+              </select>
+            </div>
+            <div class="field"><label>Budget (₹)</label><input id="customDecPrice" type="number" min="0" value="0"></div>
+          </div>
+          <div class="field"><label>Additional Requirements</label><textarea id="customDecDetails" placeholder="Describe your decoration requirements"></textarea></div>
+        </div>
+      </div>
+      <div class="advance-panel">
+        <h3>💳 Advance and Balance</h3>
+        <div class="advance-grid">
+          <div class="advance-field">
+            <label for="advancePercent">Advance percentage</label>
+            <select id="advancePercent">
+              <option value="30">30% advance</option>
+              <option value="50">50% advance</option>
+              <option value="75">75% advance</option>
+              <option value="100">100% (Full Payment)</option>
+            </select>
+          </div>
+          <div class="advance-field">
+            <label for="estimatedTotal">Estimated total</label>
+            <input id="estimatedTotal" type="text" value="₹0" readonly>
+          </div>
+          <div class="advance-field">
+            <label for="advanceDueNow">Advance due now</label>
+            <input id="advanceDueNow" type="text" value="₹0" readonly>
+          </div>
+          <div class="advance-field">
+            <label for="balanceLater">Balance later</label>
+            <input id="balanceLater" type="text" value="₹0" readonly>
+          </div>
+          <div class="advance-field">
+            <label for="balanceDueDate">Balance due date</label>
+            <input id="balanceDueDate" type="date" readonly>
+          </div>
+        </div>
+        <div class="advance-progress">
+          <div id="advanceProgressBar" class="advance-progress-bar" style="width:30%"></div>
+        </div>
+        <p class="advance-progress-text">
+          Payment progress after the selected advance:
+          <strong id="advanceProgressText">30% paid after advance</strong>
+        </p>
+      </div>
+      <div class="price-breakdown" id="costBreakdown">
+        <h4>Price breakdown</h4>
+        <div class="price-breakdown-row">
+          <span id="breakdownEventName">Event package</span>
+          <strong id="breakdownEventPrice">₹0</strong>
+        </div>
+        <div class="price-breakdown-row">
+          <span id="breakdownDecorationName">Decoration</span>
+          <strong id="breakdownDecorationPrice">₹0</strong>
+        </div>
+        <div class="price-breakdown-row">
+          <span>Venue surcharge</span>
+          <strong id="breakdownVenuePrice">₹0</strong>
+        </div>
+        <div class="price-breakdown-row">
+          <span>Guests</span>
+          <strong id="breakdownGuests">50</strong>
+        </div>
+        <div class="price-breakdown-row price-breakdown-total">
+          <span>Total estimate</span>
+          <strong id="breakdownTotal">₹0</strong>
+        </div>
+      </div>
+      <button class="purple" type="submit">Continue to Payment</button>
+    </form>
+  </div>
+</section>
+<section id="payment" class="page">
+  <div class="panel" style="max-width:600px;margin:auto">
+    <div class="payment-heading">
+      <div class="payment-logo">💳</div>
+      <div>
+        <h2 style="margin:0">Secure Checkout</h2>
+        <p class="payment-small" style="margin:5px 0">Elite Events · Payment Simulation</p>
+      </div>
+    </div>
+    <div class="notice">
+      <b>Test payment mode</b><br>
+      This screen simulates a payment gateway for your student project.
+      No money is transferred. Do not enter real UPI, card, or banking details.
+    </div>
+    <div id="paymentSummary"></div>
+    <form id="paymentForm">
+      <div class="field">
+        <label>Choose Payment Method</label>
+        <select id="paymentMethod">
+          <option value="UPI">📱 UPI</option>
+          <option value="Card">💳 Debit / Credit Card</option>
+          <option value="Net Banking">🏦 Net Banking</option>
+        </select>
+      </div>
+      <div id="paymentMethodDetails"></div>
+      <div class="field">
+        <label>Transaction Reference (optional)</label>
+        <input id="paymentReference" maxlength="60" placeholder="Leave blank to generate a reference">
+        <small class="payment-small">A sample reference will be generated automatically if left blank.</small>
+      </div>
+      <div class="payment-method-card">
+        <h3>🧪 Payment Result</h3>
+        <p class="payment-small">Choose the result to simulate how a payment gateway responds.</p>
+        <select id="testPaymentResult">
+          <option value="success">Successful Payment</option>
+          <option value="failure">Failed Payment</option>
+        </select>
+      </div>
+      <div class="payment-total">
+        <span>Amount payable</span><br>
+        <strong id="payableAmount">₹0</strong>
+        <p class="payment-small">This amount is displayed for testing only.</p>
+      </div>
+      <button class="gold" type="submit" id="confirmPaymentButton" style="width:100%">
+        🔒 Pay Now
+      </button>
+      <div class="payment-security">
+        <span>🔒 Secure checkout simulation</span>
+        <span>✓ No real payment</span>
+        <span>🧪 Test transaction</span>
+      </div>
+    </form>
+  </div>
+</section>
+<section id="receiptPage" class="page">
+  <div id="receipt" class="panel" style="max-width:650px;margin:auto"></div>
+  <div class="btnrow no-print" style="justify-content:center">
+    <button type="button" class="purple" onclick="window.print()">Print Receipt</button>
+    <button type="button" class="gold" onclick="showPage('bookings')">My Bookings</button>
+    <button type="button" class="green" id="payBalanceButton" onclick="payBalance()">Pay Balance</button>
+  </div>
+</section>
+<section id="bookings" class="page">
+  <h2>My Bookings</h2>
+  <div id="bookingsList"></div>
+</section>
+<section id="adminLogin" class="page">
+  <div class="panel" style="max-width:450px;margin:auto">
+    <h2>Admin Login</h2>
+    <form id="adminLoginForm">
+      <div class="field"><label>Admin Email</label><input id="adminEmail" type="email" value="admin@eliteevents.com" required></div>
+      <div class="field"><label>Password</label><input id="adminPassword" type="password" value="admin123" required></div>
+      <button class="purple" type="submit">Login as Admin</button>
+    </form>
+    <div class="notice">Admin login: admin@eliteevents.com<br>Password: admin123</div>
+    <p id="adminMessage"></p>
+  </div>
+</section>
+<section id="admin" class="page">
+  <h2>Admin Dashboard</h2>
+  <div class="grid">
+    <div class="card"><b>Total Bookings</b><h2 id="adminCount">0</h2></div>
+    <div class="card"><b>Advance Collected</b><h2 id="adminAdvance">₹0</h2></div>
+    <div class="card"><b>Balance Pending</b><h2 id="adminBalance">₹0</h2></div>
+  </div>
+  <div class="panel">
+    <h3>➕ Add New Event</h3>
+    <form id="addEventForm">
+      <div class="row">
+        <div class="field"><label>Event Name</label><input id="newEventName" required placeholder="e.g. Graduation"></div>
+        <div class="field"><label>Base Price (₹)</label><input id="newEventPrice" type="number" min="0" required></div>
+        <div class="field"><label>Icon / Emoji</label><input id="newEventIcon" value="🎉"></div>
+        <div class="field"><label>Event Image URL (optional)</label><input id="newEventImage" type="url" placeholder="https://..."></div>
+      </div>
+      <h4>Five Decoration Choices</h4>
+      <div class="row">
+        <div class="field"><label>Decoration 1</label><input id="dName1" value="Classic Decoration" required><input id="dPrice1" type="number" min="0" value="3000" required></div>
+        <div class="field"><label>Decoration 2</label><input id="dName2" value="Floral Decoration" required><input id="dPrice2" type="number" min="0" value="4000" required></div>
+        <div class="field"><label>Decoration 3</label><input id="dName3" value="Balloon Decoration" required><input id="dPrice3" type="number" min="0" value="5000" required></div>
+        <div class="field"><label>Decoration 4</label><input id="dName4" value="Royal Decoration" required><input id="dPrice4" type="number" min="0" value="6000" required></div>
+        <div class="field"><label>Decoration 5</label><input id="dName5" value="Luxury Decoration" required><input id="dPrice5" type="number" min="0" value="7000" required></div>
+      </div>
+      <button class="purple" type="submit">Add Event</button>
+    </form>
+    <h3>Manage Events</h3>
+    <div id="adminEvents"></div>
+  </div>
+  <div class="panel">
+    <h3>All Bookings</h3>
+    <div id="adminBookings"></div>
+    <button type="button" class="red" onclick="sessionStorage.removeItem('eliteAdmin');showPage('home')">Admin Logout</button>
+  </div>
+</section>
+</main>
+<footer>Elite Events Planner · Student Project</footer>
+<script>
+"use strict";
+
+const DEFAULT_EVENTS = [
+ {name:"Birthday",price:10000,icon:"🎂",image:"https://www.tatacliq.com/special-you-multicolor-theme-happy-birthday-decoration-items/p-mp000000027328531",decorations:[
+  {name:"White & Gold",price:3000,image:"https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=400"},
+  {name:"Pastel Party",price:4000,image:"https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=400"},
+  {name:"Royal Stage",price:5000,image:"https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400"},
+  {name:"Balloon Theme",price:3500,image:"https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400"},
+  {name:"Floral Theme",price:4500,image:"https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=400"}
+ ]},
+ {name:"Marriage",price:50000,icon:"💍",image:"https://images.unsplash.com/photo-1519741497674-611481863552?w=600",decorations:[
+  {name:"Golden Mandap",price:15000,image:"https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=400"},
+  {name:"Red Floral",price:12000,image:"https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400"},
+  {name:"Traditional",price:10000,image:"https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=400"},
+  {name:"LED Wedding",price:13000,image:"https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400"},
+  {name:"White Floral",price:9000,image:"https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=400"}
+ ]},
+ {name:"Engagement",price:25000,icon:"💐",image:"https://images.unsplash.com/photo-1520854221256-17451cc8bafd?w=600",decorations:[
+  {name:"Ring Ceremony",price:8000},{name:"Pastel Romance",price:6000},{name:"LED Love",price:7500},{name:"Floral Stage",price:7000},{name:"Vintage Theme",price:6500}
+ ]},
+ {name:"Baby Shower",price:12000,icon:"🍼",image:"https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600",decorations:[
+  {name:"Blue Theme",price:5500},{name:"Pink Princess",price:5500},{name:"Traditional",price:6000},{name:"Teddy Theme",price:5000},{name:"Pastel Flowers",price:5200}
+ ]},
+ {name:"Corporate Event",price:40000,icon:"🏢",image:"https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=600",decorations:[
+  {name:"Executive Stage",price:10000},{name:"Minimal Corporate",price:8000},{name:"LED Conference",price:12000},{name:"Award Night",price:15000},{name:"Product Launch",price:13000}
+ ]}
+];
+
+// FIXED: ADDED IMAGE FIELD FOR ALL VENUES - INCLUDING KADAMBA
+const VENUES=[
+ {area:"Rajajinagar",name:"Kadamba Party Hall",charge:20000,image:"kadamba.jpg"},
+ {area:"Malleshwaram",name:"Havyaka Bhavana",charge:35000,image:"havyaka bhavana.jpg"},
+ {area:"Indiranagar",name:"Arekas Arena",charge:250000,image:"arekas arena.jpg"},
+ {area:"Jayanagar",name:"Samskruthi Swastik",charge:50000,image:"samskruthi swastik.jpg"},
+ {area:"Banashankari",name:"Sri Hari Kalyana Mantapa",charge:65000,image:"sri hari kalyana mantapa.jpg"},
+];
+
+const $=id=>document.getElementById(id);
+const money=n=>"₹"+Number(n||0).toLocaleString("en-IN");
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({
+ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+}[c]));
+function load(key,fallback){
+ try{
+  const x=JSON.parse(localStorage.getItem(key));
+  return x===null?fallback:x;
+ }catch(error){return fallback;}
+}
+function save(key,value){
+ localStorage.setItem(key,JSON.stringify(value));
+}
+let events=load("eliteEvents",null);
+if(!Array.isArray(events)){
+ events=DEFAULT_EVENTS;
+ save("eliteEvents",events);
+}
+let selectedDecoration=null;
+let draftBooking=null;
+let currentReceiptId=null;
+let balancePaymentBookingId=null;
+function toggleMenu(){
+ $("dropdown").classList.toggle("hidden");
+}
+document.addEventListener("click",function(e){
+ if(!e.target.closest(".menu"))$("dropdown").classList.add("hidden");
+});
+function showPage(id){
+ if(id==="bookings"&&!load("eliteCurrentUser",null)){
+  alert("Please login first.");
+  id="login";
+ }
+ if(id==="admin"&&sessionStorage.getItem("eliteAdmin")!=="yes")id="adminLogin";
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ const page=$(id);
+ if(!page){console.error("Page not found:",id);return;}
+ page.classList.add("active");
+ if(id==="events")renderEvents();
+ if(id==="locations")renderVenues();
+ if(id==="booking")setupBooking();
+ if(id==="bookings")renderBookings();
+ if(id==="admin")renderAdmin();
+ if(id==="payment"){
+  renderPaymentMethod();
+  updatePayableAmount();
+ }
+ window.scrollTo(0,0);
+}
+function updateNav(){
+ const user=load("eliteCurrentUser",null);
+ $("loginButton").classList.toggle("hidden",!!user);
+ $("registerButton").classList.toggle("hidden",!!user);
+ $("logoutButton").classList.toggle("hidden",!user);
+}
+function logout(){
+ localStorage.removeItem("eliteCurrentUser");
+ updateNav();
+ showPage("home");
+}
+$("registerForm").addEventListener("submit",function(e){
+ e.preventDefault();
+ const name=$("regName").value.trim();
+ const email=$("regEmail").value.trim().toLowerCase();
+ const phone=$("regPhone").value.trim();
+ const password=$("regPassword").value;
+ if(!name||!email||!phone||password.length<6){
+  $("registerMessage").textContent="Please complete all fields correctly.";
+  return;
+ }
+ const users=load("eliteUsers",[]);
+ if(users.some(u=>String(u.email).toLowerCase()===email)){
+  $("registerMessage").textContent="This email is already registered. Please login.";
+  return;
+ }
+ const user={id:"USER-"+Date.now(),name,email,phone,password};
+ users.push(user);
+ save("eliteUsers",users);
+ $("registerMessage").textContent="Registration successful! Please login.";
+ $("registerForm").reset();
+});
+$("loginForm").addEventListener("submit",function(e){
+ e.preventDefault();
+ const email=$("loginEmail").value.trim().toLowerCase();
+ const password=$("loginPassword").value;
+ const users=load("eliteUsers",[]);
+ const user=users.find(u=>
+  String(u.email).toLowerCase()===email&&u.password===password
+ );
+ if(!user){
+  $("loginMessage").textContent="Incorrect email or password. Please register first if you do not have an account.";
+  return;
+ }
+ save("eliteCurrentUser",{
+  id:user.id,name:user.name,email:user.email,phone:user.phone
+ });
+ $("loginMessage").textContent="Login successful!";
+ updateNav();
+ $("loginForm").reset();
+ showPage("home");
+ alert("Welcome back, "+user.name+"!");
+});
+function renderEventCard(e){
+ const card=document.createElement("div");
+ card.className="card";
+ const img=document.createElement("img");
+ img.className="photo";img.alt=e.name;img.src=e.image||"";
+ img.onerror=function(){this.style.display="none";};
+ card.appendChild(img);
+ const heading=document.createElement("h3");
+ heading.textContent=(e.icon||"🎉")+" "+e.name;
+ card.appendChild(heading);
+ const price=document.createElement("p");
+ price.className="price";price.textContent="From "+money(e.price);
+ card.appendChild(price);
+ const choices=document.createElement("p");
+ choices.textContent=(e.decorations||[]).length+" decoration choices";
+ card.appendChild(choices);
+ const btn=document.createElement("button");
+ btn.type="button";btn.className="purple";btn.textContent="Book Event";
+ btn.addEventListener("click",()=>startBooking(e.name));
+ card.appendChild(btn);
+ return card;
+}
+function renderEvents(){
+ const eventList=$("eventList"),homeEvents=$("homeEvents");
+ eventList.replaceChildren();homeEvents.replaceChildren();
+ if(events.length===0){
+  eventList.textContent="No events are available yet.";
+  homeEvents.textContent="No events are available yet.";
+  return;
+ }
+ events.forEach(event=>eventList.appendChild(renderEventCard(event)));
+ events.slice(0,4).forEach(event=>homeEvents.appendChild(renderEventCard(event)));
+}
+// FIXED: ADDED IMAGE DISPLAY FOR VENUES - KADAMBA PHOTO WILL NOW SHOW
+function renderVenues(){
+ $("locationList").innerHTML=VENUES.map(v=>`<div class="card">
+  <img class="photo" src="${esc(v.image || '')}" alt="${esc(v.name)}" onerror="this.style.display='none'">
+  <h3>📍 ${esc(v.area)}</h3><p>${esc(v.name)}</p>
+  <p>Venue charge: ${money(v.charge)}</p>
+  <a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v.name+" "+v.area+" Bengaluru")}">Open Google Maps</a>
+  <p><button type="button" class="purple venue-book-button">Book Here</button></p>
+ </div>`).join("");
+ $("locationList").querySelectorAll(".venue-book-button").forEach((button,index)=>{
+  button.addEventListener("click",()=>startBooking("",VENUES[index].area));
+ });
+}
+function startBooking(eventName="",venueArea=""){
+ if(!load("eliteCurrentUser",null)){
+  alert("Please register or login before booking.");
+  showPage("login");
+  return;
+ }
+ showPage("booking");
+ if(eventName&&events.some(e=>e.name===eventName))$("eventSelect").value=eventName;
+ if(venueArea)$("venueSelect").value=venueArea;
+ renderDecorations();
+ updateCustomVenue();
+ updateCustomDecoration();
+ calculate();
+}
+function setupBooking(){
+ $("eventSelect").innerHTML=events.map(e=>`<option value="${esc(e.name)}">${esc(e.name)}</option>`).join("");
+ $("venueSelect").innerHTML=VENUES.map(v=>`<option value="${esc(v.area)}">${esc(v.area)} — ${esc(v.name)}</option>`).join()+'<option value="custom">Custom venue</option>';
+ const today=new Date();
+ today.setMinutes(today.getMinutes()-today.getTimezoneOffset());
+ $("eventDate").min=today.toISOString().slice(0,10);
+ if(!$("eventDate").value)$("eventDate").value=today.toISOString().slice(0,10);
+ selectedDecoration=null;
+ renderDecorations();
+ updateCustomVenue();
+ updateCustomDecoration();
+ calculate();
+}
+function renderDecorations(){
+ const e=events.find(x=>x.name===$("eventSelect").value);
+ selectedDecoration=null;
+ $("decorationList").innerHTML=e?e.decorations.map((d,i)=>`<div class="deco" data-decoration-index="${i}">
+  ${d.image?`<img class="photo" src="${esc(d.image)}" alt="${esc(d.name)}" onerror="this.style.display='none'">`:`<div class="photo" style="display:grid;place-items:center;font-size:36px">🎨</div>`}
+  <h4>${esc(d.name)}</h4><p class="price">${money(d.price)}</p><small>Click to select</small>
+ </div>`).join():"<p>No events available. Ask the admin to add an event.</p>";
+ document.querySelectorAll(".deco").forEach(card=>{
+  card.addEventListener("click",()=>chooseDecoration(Number(card.dataset.decorationIndex)));
+ });
+ calculate();
+}
+function chooseDecoration(i){
+ if($("customDecCheck").checked){
+  alert("Uncheck custom decoration to select a standard design.");
+  return;
+ }
+ const e=events.find(x=>x.name===$("eventSelect").value);
+ if(!e||!e.decorations[i])return;
+ selectedDecoration=e.decorations[i];
+ document.querySelectorAll(".deco").forEach(x=>x.classList.remove("selected"));
+ const selected=$("decorationList").querySelector(`[data-decoration-index="${i}"]`);
+ if(selected)selected.classList.add("selected");
+ calculate();
+}
+function updateCustomVenue(){
+ const custom=$("venueSelect").value==="custom";
+ $("customVenue").classList.toggle("hidden",!custom);
+ ["venueName","venueArea","venueAddress"].forEach(id=>$(id).required=custom);
+}
+function updateCustomDecoration(){
+ const custom=$("customDecCheck").checked;
+ $("customDecoration").classList.toggle("hidden",!custom);
+ ["customDecName","customDecColors","customDecStyle","customDecPrice"].forEach(id=>$(id).required=custom);
+ if(custom){
+  selectedDecoration=null;
+  document.querySelectorAll(".deco").forEach(x=>x.classList.remove("selected"));
+ }
+}
+function selectedVenue(){
+ if($("venueSelect").value==="custom"){
+  return {
+   area:$("venueArea").value.trim(),
+   name:$("venueName").value.trim(),
+   address:$("venueAddress").value.trim(),
+   charge:Math.max(0,Number($("venueCharge").value)||0),
+   custom:true
+  };
+ }
+ const v=VENUES.find(v=>v.area===$("venueSelect").value);
+ return v?{...v,address:v.area+", Bengaluru",custom:false}:null;
+}
+function chosenDecoration(){
+ if($("customDecCheck").checked){
+  return {
+   name:$("customDecName").value.trim(),
+   price:Math.max(0,Number($("customDecPrice").value)||0),
+   colors:$("customDecColors").value.trim(),
+   style:$("customDecStyle").value,
+   details:$("customDecDetails").value.trim(),
+   custom:true
+  };
+ }
+ return selectedDecoration?{...selectedDecoration,custom:false}:null;
+}
+function calculate(){
+ const event=events.find(x=>x.name===$("eventSelect").value);
+ const venue=selectedVenue();
+ const decoration=chosenDecoration();
+ if(!event||!venue){
+  $("estimatedTotal").value=money(0);
+  $("advanceDueNow").value=money(0);
+  $("balanceLater").value=money(0);
+  $("balanceDueDate").value="";
+  $("advanceProgressBar").style.width="0%";
+  $("advanceProgressText").textContent="0% paid after advance";
+  $("costBreakdown").innerHTML=
+   "<h4>Price breakdown</h4><p>Select an available event and venue.</p>";
+  return null;
+ }
+ const eventPrice=Number(event.price)||0;
+ const venuePrice=Number(venue.charge)||0;
+ const decorationPrice=Number(decoration?.price)||0;
+ const total=eventPrice+venuePrice+decorationPrice;
+ const percent=Number($("advancePercent").value)||30;
+ const advance=Math.round(total*percent/100);
+ const balance=total-advance;
+ $("estimatedTotal").value=money(total);
+ $("advanceDueNow").value=money(advance);
+ $("balanceLater").value=money(balance);
+ $("advanceProgressBar").style.width=percent+"%";
+ $("advanceProgressText").textContent=percent+"% paid after advance";
+ const eventDate=$("eventDate").value;
+ if(eventDate){
+  const dueDate=new Date(eventDate+"T00:00:00");
+  dueDate.setDate(dueDate.getDate()+1);
+  const year=dueDate.getFullYear();
+  const month=String(dueDate.getMonth()+1).padStart(2,"0");
+  const day=String(dueDate.getDate()).padStart(2,"0");
+  $("balanceDueDate").value=year+"-"+month+"-"+day;
+ }else{
+  $("balanceDueDate").value="";
+ }
+ $("breakdownEventName").textContent=event.name+" package";
+ $("breakdownEventPrice").textContent=money(eventPrice);
+ $("breakdownDecorationName").textContent=decoration?decoration.name:"Decoration";
+ $("breakdownDecorationPrice").textContent=money(decorationPrice);
+ $("breakdownVenuePrice").textContent=money(venuePrice);
+ $("breakdownGuests").textContent=$("guests").value||"0";
+ $("breakdownTotal").textContent=money(total);
+ return {total,advance,balance,percent};
+}
+$("eventSelect").addEventListener("change",function(){
+ renderDecorations();
+ calculate();
+});
+$("venueSelect").addEventListener("change",function(){
+ updateCustomVenue();
+ calculate();
+});
+$("customDecCheck").addEventListener("change",function(){
+ updateCustomDecoration();
+ calculate();
+});
+["venueName","venueArea","venueAddress","venueCharge","customDecName","customDecColors","customDecStyle","customDecPrice","customDecDetails","advancePercent","guests"].forEach(id=>{
+ $(id).addEventListener("input",calculate);
+});
+$("advancePercent").addEventListener("change",calculate);
+$("eventDate").addEventListener("change",calculate);
+$("bookingForm").addEventListener("submit",function(e){
+ e.preventDefault();
+ const user=load("eliteCurrentUser",null);
+ if(!user){
+  alert("Please register or login before booking.");
+  showPage("login");
+  return;
+ }
+ const cost=calculate();
+ const event=events.find(x=>x.name===$("eventSelect").value);
+ const venue=selectedVenue();
+ const decoration=chosenDecoration();
+ const guests=Number($("guests").value);
+ if(!event||!venue||!decoration){
+  alert("Please select an event, venue, and decoration before continuing.");
+  return;
+ }
+ if(!Number.isFinite(guests)||guests<1||guests>5000){
+  alert("Please enter a guest count between 1 and 5000.");
+  return;
+ }
+ if(!cost){
+  alert("Please check your event and venue details.");
+  return;
+ }
+ if(!$("eventDate").value){
+  alert("Please select your event date.");
+  return;
+ }
+ const selectedDate=new Date($("eventDate").value+"T00:00:00");
+ const today=new Date();
+ today.setHours(0,0,0,0);
+ if(selectedDate<today){
+  alert("Please choose today or a future date.");
+  return;
+ }
+ draftBooking={
+  id:"ELT-"+Date.now(),
+  userId:user.id,
+  customer:user.name,
+  email:user.email,
+  phone:user.phone||"",
+  event:event.name,
+  decoration:decoration,
+  venue:venue,
+  date:$("eventDate").value,
+  time:$("eventTime").value,
+  guests:guests,
+  total:cost.total,
+  advance:cost.advance,
+  balance:cost.balance,
+  percent:cost.percent,
+  balanceDueDate:$("balanceDueDate").value,
+  balancePaid:0,
+  status:cost.balance===0?"Fully Paid":"Advance Paid",
+  paymentStatus:"Pending"
+ };
+ balancePaymentBookingId=null;
+ $("paymentSummary").innerHTML=`<div class="payment-method-card">
+  <h3>Booking Payment Summary</h3>
+  <p><b>Booking ID:</b> ${esc(draftBooking.id)}</p>
+  <p><b>Customer:</b> ${esc(draftBooking.customer)}</p>
+  <p><b>Event:</b> ${esc(draftBooking.event)}</p>
+  <p><b>Decoration:</b> ${esc(draftBooking.decoration.name)}</p>
+  <p><b>Venue:</b> ${esc(draftBooking.venue.name)} — ${esc(draftBooking.venue.area)}</p>
+  <p><b>Date:</b> ${esc(draftBooking.date)} at ${esc(draftBooking.time)}</p>
+  <p><b>Total cost:</b> ${money(draftBooking.total)}</p>
+  <p><b>Advance (${draftBooking.percent}%):</b> ${money(draftBooking.advance)}</p>
+  <p><b>Balance after advance:</b> ${money(draftBooking.balance)}</p>
+  <p><b>Balance due date:</b> ${esc(draftBooking.balanceDueDate)}</p>
+ </div>`;
+ $("paymentForm").reset();
+ $("testPaymentResult").value="success";
+ renderPaymentMethod();
+ updatePayableAmount();
+ showPage("payment");
+});
+function renderPaymentMethod(){
+ const method=$("paymentMethod").value;
+ const container=$("paymentMethodDetails");
+ if(method==="UPI"){
+  container.innerHTML=`<div class="payment-method-card">
+   <h3>📱 UPI Payment</h3>
+   <p class="payment-small">Example UPI checkout screen. This does not connect to a real UPI app.</p>
+   <div class="payment-qr" aria-label="Illustrative payment QR pattern"></div>
+   <p style="text-align:center"><b>PAYMENT QR CODE</b></p>
+   <p class="payment-small" style="text-align:center">Illustrative QR pattern only — not payable.</p>
+   <div class="field"><label>Sample UPI ID</label><input id="testUpiId" value="sample-user@upi" autocomplete="off"></div>
+   <div class="payment-status"><span class="payment-status-dot"></span><span>Waiting for simulated UPI confirmation</span></div>
+  </div>`;
+ }else if(method==="Card"){
+  container.innerHTML=`<div class="payment-method-card">
+   <h3>💳 Card Payment</h3>
+   <p class="payment-small">Use fictional sample details only. Never enter a real card number, expiry date, or CVV.</p>
+   <div class="field"><label>Cardholder Name (sample)</label><input id="testCardName" value="SAMPLE CUSTOMER" autocomplete="off"></div>
+   <div class="field"><label>Sample Card Number</label><input id="testCardNumber" value="0000 0000 0000 0000" inputmode="numeric" maxlength="19" autocomplete="off"></div>
+   <div class="row">
+    <div class="field"><label>Expiry (sample)</label><input id="testCardExpiry" value="12/30" maxlength="5" autocomplete="off"></div>
+    <div class="field"><label>CVV (sample)</label><input id="testCardCvv" value="000" maxlength="3" inputmode="numeric" autocomplete="off"></div>
+   </div>
+   <div class="notice">These are dummy values for a visual simulation. Card information is not saved or sent anywhere.</div>
+  </div>`;
+ }else{
+  container.innerHTML=`<div class="payment-method-card">
+   <h3>🏦 Net Banking</h3>
+   <p class="payment-small">Choose a sample bank to simulate a bank redirect.</p>
+   <div class="field"><label>Select Bank</label><select id="testBank">
+    <option>Sample State Bank</option><option>Sample HDFC Bank</option><option>Sample ICICI Bank</option><option>Sample Axis Bank</option><option>Sample Canara Bank</option>
+   </select></div>
+   <div class="payment-bank"><span class="payment-bank-icon">🏛️</span><div><b>Bank Payment Gateway</b><div class="payment-small">Simulated secure bank confirmation</div></div></div>
+   <div class="payment-status"><span class="payment-status-dot"></span><span>Ready to simulate bank response</span></div>
+  </div>`;
+ }
+ updatePayableAmount();
+}
+function getPaymentAmount(){
+ if(balancePaymentBookingId){
+  const user=load("eliteCurrentUser",null);
+  const booking=load("eliteBookings",[]).find(b=>user&&b.id===balancePaymentBookingId&&b.userId===user.id);
+  return booking?Number(booking.balance)||0:0;
+ }
+ return draftBooking?Number(draftBooking.advance)||0:0;
+}
+function updatePayableAmount(){
+ $("payableAmount").textContent=money(getPaymentAmount());
+ $("confirmPaymentButton").textContent=$("testPaymentResult").value==="failure"
+  ?"Simulate Failed Payment"
+  :(balancePaymentBookingId?"🔒 Pay Remaining Balance":"🔒 Pay Now");
+}
+$("paymentMethod").addEventListener("change",renderPaymentMethod);
+$("testPaymentResult").addEventListener("change",updatePayableAmount);
+$("paymentForm").addEventListener("submit",function(e){
+ e.preventDefault();
+ const result=$("testPaymentResult").value;
+ if(result==="failure"){
+  const reference="FAILED-"+Date.now();
+  alert("PAYMENT FAILED\n\nReference: "+reference+
+   "\nStatus: Failed (simulation only)\n\nNo money was transferred and no booking payment was recorded.");
+  return;
+ }
+ const method=$("paymentMethod").value;
+ const enteredReference=$("paymentReference").value.trim();
+ const reference=enteredReference||"PAY-"+Date.now();
+ if(balancePaymentBookingId){
+  const user=load("eliteCurrentUser",null);
+  if(!user){
+   alert("Please login first.");
+   balancePaymentBookingId=null;
+   showPage("login");
+   return;
+  }
+  const bookings=load("eliteBookings",[]);
+  const index=bookings.findIndex(b=>b.id===balancePaymentBookingId&&b.userId===user.id);
+  if(index<0){
+   alert("Booking not found.");
+   balancePaymentBookingId=null;
+   showPage("bookings");
+   return;
+  }
+  const booking=bookings[index];
+  if(Number(booking.balance)<=0){
+   alert("This booking is already fully paid.");
+   balancePaymentBookingId=null;
+   openReceipt(booking.id);
+   return;
+  }
+  const amountPaid=Number(booking.balance);
+  booking.balancePaid=Number(booking.balancePaid||0)+amountPaid;
+  booking.balance=0;
+  booking.percent=100;
+  booking.status="Fully Paid";
+  booking.balanceMethod=method;
+  booking.balanceReference=enteredReference||"BAL-PAY-"+Date.now();
+  save("eliteBookings",bookings);
+  currentReceiptId=booking.id;
+  balancePaymentBookingId=null;
+  $("paymentForm").reset();
+  renderPaymentMethod();
+  renderReceipt(booking);
+  alert("PAYMENT SUCCESSFUL!\n\nAmount paid: "+money(amountPaid)+
+   "\nPayment method: "+method+
+   "\nReference: "+booking.balanceReference+
+   "\n\nThis was a simulated payment. No real money was transferred.");
+  showPage("receiptPage");
+  return;
+ }
+ if(!draftBooking){
+  alert("Please start a booking first.");
+  showPage("events");
+  return;
+ }
+ draftBooking.method=method;
+ draftBooking.reference=reference;
+ draftBooking.balancePaid=0;
+ draftBooking.paymentStatus="Successful";
+ draftBooking.status=Number(draftBooking.balance)===0?"Fully Paid":"Advance Paid";
+ const bookings=load("eliteBookings",[]);
+ bookings.push(draftBooking);
+ save("eliteBookings",bookings);
+ currentReceiptId=draftBooking.id;
+ const savedBooking=draftBooking;
+ draftBooking=null;
+ $("paymentForm").reset();
+ renderPaymentMethod();
+ renderReceipt(savedBooking);
+ alert("PAYMENT SUCCESSFUL!\n\nAmount paid: "+money(savedBooking.advance)+
+  "\nPayment method: "+method+
+  "\nReference: "+reference+
+  "\n\nYour booking has been saved.\nThis was a simulated payment. No real money was transferred.");
+ showPage("receiptPage");
+});
+function renderReceipt(b){
+ const decoration=b.decoration;
+ const venue=b.venue;
+ $("receipt").innerHTML=`<div style="text-align:center">
+  <h2>💜 Elite Events</h2><h3>Booking Receipt</h3>
+  <p style="color:green">${esc(b.status||"Booking saved")}</p>
+  <p class="payment-small">PAYMENT RECEIPT — SIMULATED TRANSACTION</p>
+ </div><hr>
+ <p><b>Booking ID:</b> ${esc(b.id)}</p>
+ <p><b>Customer:</b> ${esc(b.customer)}</p>
+ <p><b>Email:</b> ${esc(b.email)}</p>
+ <p><b>Event:</b> ${esc(b.event)}</p>
+ <p><b>Decoration:</b> ${esc(decoration.name)}</p>
+ ${decoration.custom?`<p>Colours: ${esc(decoration.colors)}</p><p>Style: ${esc(decoration.style)}</p><p>Details: ${esc(decoration.details||"Not specified")}</p>`:""}
+ <p><b>Venue:</b> ${esc(venue.name)}</p>
+ <p><b>Area:</b> ${esc(venue.area)}</p>
+ <p><b>Address:</b> ${esc(venue.address)}</p>
+ <p><b>Date:</b> ${esc(b.date)} at ${esc(b.time)}</p>
+ <p><b>Guests:</b> ${b.guests}</p><hr>
+ <p>Total: <b>${money(b.total)}</b></p>
+ <p>Initial advance (${b.percent}%): <b>${money(b.advance)}</b></p>
+ <p>Balance due date: <b>${esc(b.balanceDueDate||"Not set")}</b></p>
+ <p>Remaining balance paid: <b>${money(b.balancePaid||0)}</b></p>
+ <p>Balance remaining: <b>${money(b.balance)}</b></p>
+ <p>Initial payment method: ${esc(b.method||"Payment")}</p>
+ <p>Initial reference: ${esc(b.reference||"")}</p>
+ <p>Payment result: ${esc(b.paymentStatus||"Successful")}</p>
+ ${b.balancePaid>0?`<p>Balance payment method: ${esc(b.balanceMethod||"Payment")}</p><p>Balance payment reference: ${esc(b.balanceReference||"")}</p>`:""}
+ <p><a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(venue.name+" "+venue.area+" Bengaluru")}">Open Venue in Google Maps</a></p>
+ <hr><p style="text-align:center">Thank you for choosing Elite Events!</p>`;
+ $("payBalanceButton").classList.toggle("hidden",Number(b.balance)===0);
+}
+function renderBookings(){
+ const user=load("eliteCurrentUser",null);
+ if(!user){
+  $("bookingsList").innerHTML="<div class='panel'>Please login to view your bookings.</div>";
+  return;
+ }
+ const list=load("eliteBookings",[]).filter(b=>b.userId===user.id).reverse();
+ $("bookingsList").innerHTML=list.length?list.map(b=>`<div class="card">
+  <h3>${esc(b.event)}</h3>
+  <p>Booking ID: ${esc(b.id)}</p>
+  <p>Decoration: ${esc(b.decoration.name)}</p>
+  <p>Venue: ${esc(b.venue.name)}, ${esc(b.venue.area)}</p>
+  <p>Date: ${esc(b.date)} at ${esc(b.time)}</p>
+  <p>Total: ${money(b.total)}</p>
+  <p>Initial payment: ${money(b.advance)}</p>
+  <p>Balance due date: ${esc(b.balanceDueDate||"Not set")}</p>
+  <p>Balance paid: ${money(b.balancePaid||0)}</p>
+  <p>Balance remaining: ${money(b.balance)}</p>
+  <p>Status: <b>${esc(b.status)}</b></p>
+  <button type="button" class="purple view-receipt-button" data-id="${esc(b.id)}">View Receipt</button>
+  ${Number(b.balance)>0?` <button type="button" class="gold pay-balance-button" data-id="${esc(b.id)}">Pay Balance</button>`:""}
+ </div>`).join():"<div class='panel'>You have no bookings yet. <button type='button' class='purple' onclick=\"showPage('events')\">Book an Event</button></div>";
+ $("bookingsList").querySelectorAll(".view-receipt-button").forEach(button=>{
+  button.addEventListener("click",()=>openReceipt(button.dataset.id));
+ });
+ $("bookingsList").querySelectorAll(".pay-balance-button").forEach(button=>{
+  button.addEventListener("click",()=>payBalanceFor(button.dataset.id));
+ });
+}
+function openReceipt(id){
+ const user=load("eliteCurrentUser",null);
+ const b=load("eliteBookings",[]).find(b=>b.id===id&&user&&b.userId===user.id);
+ if(!b)return;
+ currentReceiptId=id;
+ renderReceipt(b);
+ showPage("receiptPage");
+}
+function payBalance(){
+ if(currentReceiptId)payBalanceFor(currentReceiptId);
+}
+function payBalanceFor(id){
+ const user=load("eliteCurrentUser",null);
+ if(!user){
+  alert("Please login first.");
+  showPage("login");
+  return;
+ }
+ const bookings=load("eliteBookings",[]);
+ const booking=bookings.find(b=>b.id===id&&b.userId===user.id);
+ if(!booking){alert("Booking not found.");return;}
+ if(Number(booking.balance)<=0){alert("This booking is already fully paid.");return;}
+ balancePaymentBookingId=id;
+ draftBooking=null;
+ $("paymentSummary").innerHTML=`<h3>💜 Elite Events — Balance Payment</h3>
+  <p><b>Booking ID:</b> ${esc(booking.id)}</p>
+  <p><b>Customer:</b> ${esc(booking.customer)}</p>
+  <p><b>Event:</b> ${esc(booking.event)}</p>
+  <p><b>Venue:</b> ${esc(booking.venue.name)} — ${esc(booking.venue.area)}</p>
+  <p><b>Event Date:</b> ${esc(booking.date)} at ${esc(booking.time)}</p>
+  <p><b>Balance due date:</b> ${esc(booking.balanceDueDate||"Not set")}</p><hr>
+  <p>Original Total: <b>${money(booking.total)}</b></p>
+  <p>Advance Already Paid: <b>${money(booking.advance)}</b></p>
+  <p>Previous Balance Payments: <b>${money(booking.balancePaid||0)}</b></p>
+  <h3 style="color:#6a1b9a">Remaining Amount to Pay: ${money(booking.balance)}</h3>
+  <div class="notice">This is a simulated transaction. No real money will be transferred.</div>`;
+ $("paymentForm").reset();
+ $("testPaymentResult").value="success";
+ renderPaymentMethod();
+ updatePayableAmount();
+ showPage("payment");
+}
+$("adminLoginForm").addEventListener("submit",function(e){
+ e.preventDefault();
+ if($("adminEmail").value.trim().toLowerCase()==="admin@eliteevents.com"&&$("adminPassword").value==="admin123"){
+  sessionStorage.setItem("eliteAdmin","yes");
+  $("adminMessage").textContent="";
+  showPage("admin");
+ }else{
+  $("adminMessage").textContent="Incorrect admin login.";
+ }
+});
+$("addEventForm").addEventListener("submit",function(e){
+ e.preventDefault();
+ if(sessionStorage.getItem("eliteAdmin")!=="yes"){
+  alert("Please login as admin.");
+  showPage("adminLogin");
+  return;
+ }
+ const name=$("newEventName").value.trim();
+ const price=Number($("newEventPrice").value);
+ if(events.some(x=>x.name.toLowerCase()===name.toLowerCase())){
+  alert("An event with this name already exists.");
+  return;
+ }
+ if(!name||!Number.isFinite(price)||price<0){
+  alert("Enter a valid event name and price.");
+  return;
+ }
+ const decorations=[];
+ for(let i=1;i<=5;i++){
+  const decorationName=$("dName"+i).value.trim();
+  const decorationPrice=Number($("dPrice"+i).value);
+  if(!decorationName||!Number.isFinite(decorationPrice)||decorationPrice<0){
+   alert("Enter all five decoration names and prices.");
+   return;
+  }
+  decorations.push({name:decorationName,price:decorationPrice});
+ }
+ events.push({
+  name,price,
+  icon:$("newEventIcon").value.trim()||"🎉",
+  image:$("newEventImage").value.trim(),
+  decorations
+ });
+ save("eliteEvents",events);
+ e.target.reset();
+ $("newEventIcon").value="🎉";
+ const names=["Classic Decoration","Floral Decoration","Balloon Decoration","Royal Decoration","Luxury Decoration"];
+ const prices=[3000,4000,5000,6000,7000];
+ for(let i=1;i<=5;i++){
+  $("dName"+i).value=names[i-1];
+  $("dPrice"+i).value=prices[i-1];
+ }
+ renderEvents();
+ renderAdmin();
+ alert("Event added successfully!");
+});
+function removeEvent(name){
+ if(sessionStorage.getItem("eliteAdmin")!=="yes"){
+  alert("Please login as admin.");
+  showPage("adminLogin");
+  return;
+ }
+ if(!confirm("Remove "+name+" from the event list?"))return;
+ events=events.filter(e=>e.name!==name);
+ save("eliteEvents",events);
+ renderEvents();
+ renderAdmin();
+ alert("Event removed.");
+}
+function renderAdmin(){
+ if(sessionStorage.getItem("eliteAdmin")!=="yes")return;
+ const bookings=load("eliteBookings",[]);
+ $("adminCount").textContent=bookings.length;
+ $("adminAdvance").textContent=money(bookings.reduce((sum,b)=>sum+Number(b.advance||0),0));
+ $("adminBalance").textContent=money(bookings.reduce((sum,b)=>sum+Number(b.balance||0),0));
+ $("adminEvents").innerHTML=events.length?events.map((event,index)=>`<div class="adminrow">
+  <div><b>${esc(event.icon)} ${esc(event.name)}</b><br><span class="price">${money(event.price)}</span><br><small>${event.decorations.length} decoration options</small></div>
+  <button type="button" class="red remove-event-button" data-index="${index}">🗑 Remove</button>
+ </div>`).join():"<p>No events. Use the form above to add an event.</p>";
+ $("adminEvents").querySelectorAll(".remove-event-button").forEach(button=>{
+  button.addEventListener("click",()=>{
+   const event=events[Number(button.dataset.index)];
+   if(event)removeEvent(event.name);
+  });
+ });
+ $("adminBookings").innerHTML=bookings.length?bookings.slice().reverse().map(b=>`<div class="notice">
+  <b>${esc(b.id)}</b><br>
+  Customer: ${esc(b.customer)}<br>
+  Event: ${esc(b.event)}<br>
+  Venue: ${esc(b.venue.name)}<br>
+  Date: ${esc(b.date)}<br>
+  Total: ${money(b.total)}<br>
+  Advance received: ${money(Number(b.advance||0))}<br>
+  Balance received: ${money(b.balancePaid||0)}<br>
+  Balance pending: ${money(b.balance)}<br>
+  Balance due date: ${esc(b.balanceDueDate||"Not set")}<br>
+  Payment method: ${esc(b.method||"Payment")}<br>
+  Payment reference: ${esc(b.reference||"")}<br>
+  Status: ${esc(b.status)}
+ </div>`).join():"<p>No bookings yet.</p>";
+}
+updateNav();
+renderEvents();
+renderVenues();
+renderPaymentMethod();
+</script>
+</body>
+</html>
